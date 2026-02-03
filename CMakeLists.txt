@@ -4,10 +4,12 @@ project(NetoConcurrency)
 set(CMAKE_CXX_STANDARD 20)
 
 add_executable(NetoConcurrency
-        #        firstTask/main.cpp
+        firstTask/main.cpp
+
+        #        secondTask/main.cpp
+        #        thirdTask/main.cpp
 
         libio.cppm
-#        secondTask/main1.cpp
 )
 
 target_sources(NetoConcurrency

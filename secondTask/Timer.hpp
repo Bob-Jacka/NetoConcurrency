@@ -8,16 +8,13 @@
 #ifdef WIN32
 #include <Windows.h>
 #else
-struct COORD {
-    int X;
-    int Y;
-};
+#error "I do not know, how to run this on Unix like"
 #endif
 
 class consol_parameter {
 public:
     static void SetColor(int text, int background) {
-        SetConsoleTextAttribute(hStdOut, (WORD)((background << 4) | text));
+        SetConsoleTextAttribute(hStdOut, (WORD) ((background << 4) | text));
     }
 
     static void SetPosition(int x, int y) {
@@ -34,7 +31,6 @@ private:
 HANDLE consol_parameter::hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 
 class Timer {
-private:
     using clock_t = std::chrono::high_resolution_clock;
     using second_t = std::chrono::duration<double, std::ratio<1> >;
 
@@ -46,9 +42,11 @@ private:
     }
 
 public:
-    Timer() : m_beg(clock_t::now()) {}
+    Timer() : m_beg(clock_t::now()) {
+    }
 
-    Timer(std::string name) : m_name(name), m_beg(clock_t::now()) {}
+    Timer(std::string name) : m_name(name), m_beg(clock_t::now()) {
+    }
 
     void start(std::string name) {
         m_name = name;

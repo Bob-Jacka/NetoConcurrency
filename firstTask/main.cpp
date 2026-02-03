@@ -3,7 +3,7 @@
 import Libio;
 
 using namespace std;
-std::atomic<int> current_clients = 1;
+std::atomic current_clients = 1;
 int max_clients = 10;
 
 int main() {

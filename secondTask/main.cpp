@@ -1,66 +1,59 @@
-#include "Timer.hpp"
 #include <mutex>
 #include <vector>
+#include "Timer.hpp"
 
-std::once_flag flag;
 std::mutex m1;
 std::mutex m2;
 std::mutex m3;
 std::mutex m4;
 
-static void tableHeader() { std::cout << "#\t" << "id\t\t" << "Progress Bar\t\t" << "Time" << std::endl; }
+static void table_header() {
+    std::cout << "#\t" << "id\t\t" << "Progress Bar\t\t" << "Time" << std::endl;
+}
 
-static void progressBar(int numberThreadsNow)
-{
-    int progressBar = 23;
-    int total = 37;
-    int PositionForTime = 43;
-
-    std::call_once(flag, tableHeader);
+static void progress_bar(const int thread_num_now) {
+    int progress_bar = 23;
+    constexpr int total = 37;
+    constexpr int pos_time = 43;
 
     m2.lock();
-    Timer t1;
-    consol_parameter d1;
+    const Timer t1;
     m2.unlock();
 
     m4.lock();
-    d1.SetPosition(0, numberThreadsNow + 1);
-    std::cout << numberThreadsNow << "\t" << std::this_thread::get_id() << "\t";
+    consol_parameter::SetPosition(0, thread_num_now + 1);
+    std::cout << thread_num_now << "\t" << std::this_thread::get_id() << "\t";
     m4.unlock();
 
-    while (progressBar < total)
-    {
+    while (progress_bar < total) {
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
         m1.lock();
-        d1.SetPosition(progressBar, numberThreadsNow + 1);
-        std::cout << char(219);
+        consol_parameter::SetPosition(progress_bar, thread_num_now + 1);
+        std::cout << static_cast<char>(219);
 
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
 
-        ++progressBar;
+        ++progress_bar;
         m1.unlock();
     }
     std::this_thread::sleep_for(std::chrono::milliseconds(333));
 
     m3.lock();
-    d1.SetPosition(PositionForTime, numberThreadsNow + 1);
+    consol_parameter::SetPosition(pos_time, thread_num_now + 1);
     t1.print();
     m3.unlock();
 }
 
-int main()
-{
-    int countThreads = 5;
-    std::vector<std::thread> vectorThreads(countThreads);
-
-    for (size_t i = 0; i < countThreads; i++)
-    {
-        vectorThreads[i] = std::thread(progressBar, i);
+int main() {
+    constexpr int threads = 5; //Change thread count
+    std::vector<std::thread> threads_vec(threads);
+    table_header();
+    for (size_t i = 0; i < threads; i++) {
+        threads_vec[i] = std::thread(progress_bar, i);
     }
-    for (auto& i : vectorThreads)
-    {
+    for (auto &i: threads_vec) {
         i.join();
     }
-    std::cout << "\n\n";
+    consol_parameter::SetPosition(0, threads + 1);
 }
